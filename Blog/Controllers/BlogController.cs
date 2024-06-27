@@ -23,6 +23,7 @@ namespace Blog.Controllers
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private ResponseDto _response;
+        const int maxCitiesPageSize = 10;
 
         public BlogController(IUnitOfWork unitOfWork,IMapper mapper)
         {
@@ -32,11 +33,15 @@ namespace Blog.Controllers
         }
 
         [HttpGet(ApiRoute.Blog.GetAll)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int? CategoryId,int pageNumber = 1, int pageSize = 10)
         {
             try
             {
-               var postList =await unitOfWork.Post.GetAllAsync();
+                if (pageSize > maxCitiesPageSize)
+                {
+                    pageSize = maxCitiesPageSize;
+                }
+                var postList =await unitOfWork.Post.GetPostsAsync(CategoryId,pageNumber,pageSize);
                 _response.Data = mapper.Map<IEnumerable<PostRequestDto>>(postList);
             }
             catch (Exception ex)

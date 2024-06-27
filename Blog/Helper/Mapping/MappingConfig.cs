@@ -13,6 +13,8 @@ namespace Blog.Helper.Mapping
             CreateMap<Post, PostRequestDto>();
             CreateMap<PostRequestDto, Post>()
             .ForMember(p => p.Id, x => x.Ignore());
+            CreateMap<Post, PostResponseDto>();
+            CreateMap<PostRequestDto, Post>();  
 
             CreateMap<Category, CategoryResponseDto>();
             CreateMap<CategoryResponseDto, Category>();
