@@ -28,7 +28,8 @@ namespace Blog.Controllers
         [HttpPost(ApiRoute.Identity.UpdateAccount)]
         public async Task<IActionResult> UpdateAccountRequest( [FromBody] UpdateAccountRequestDto req)
         {
-            return Ok(await identityService.UpdateAccount(req));
+            string currentUser = HttpContext.GetUserId();
+            return Ok(await identityService.UpdateAccount(req,currentUser));
         }
 
        

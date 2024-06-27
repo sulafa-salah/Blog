@@ -18,6 +18,7 @@ namespace Blog.Domain.Models
         public string LastName { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public Guid? UpdatedBy { get; set; }
         public bool IsActive { get; set; }     
         public Guid CreatedBy { get; set; }
 

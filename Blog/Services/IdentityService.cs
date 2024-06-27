@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Contracts;
+using Blog.Contracts.Blog;
 using Blog.Contracts.Common.Response;
 using Blog.Contracts.Identity.Request;
 using Blog.Domain.Models;
@@ -19,15 +20,10 @@ namespace Blog.Services
     public interface IIdentityService
     {
 
-        Task<ResponseDto> UpdateAccount( UpdateAccountRequestDto req);
+        Task<ResponseDto> UpdateAccount( UpdateAccountRequestDto req, string currentUser);
         Task<ResponseDto> ChangePassword(ChangePasswordRequestDto request);
         Task<ResponseDto> AddUserToRolesAsync(UserRolesRequestDto request, string currentUserId);
         Task<ResponseDto> RemoveUserToRolesAsync(UserRolesRequestDto request, string currentUserId);
-
-        public void print()
-        {
-            Console.WriteLine("");
-        }
 
 
     }
@@ -49,19 +45,27 @@ namespace Blog.Services
         }
 
 
-        public async Task<ResponseDto> UpdateAccount(UpdateAccountRequestDto req)
+        public async Task<ResponseDto> UpdateAccount(UpdateAccountRequestDto req, string currentUser)
         {
             // Get the user
-            var user = await userManager.FindByIdAsync(req.Id.ToString());
-            mapper.Map<UpdateAccountRequestDto, ApplicationUser>(req, user);
+           
             try
             {
-
+                var user = await userManager.FindByIdAsync(req.Id.ToString());
+                if (user == null)
+                {
+                    _response.ResponseMessage = "User doesn't exist";
+                    return _response;
+                }
+                mapper.Map<UpdateAccountRequestDto, ApplicationUser>(req, user);
+                user.UpdatedBy = new Guid(currentUser);
+                user.UpdatedDate=DateTime.Now;
                 var result = await userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
                     _response.IsSuccess = true;
                     _response.ResponseMessage = "The data has been updated successfully";
+                    _response.Data = new { Id=user.Id };
                     return _response;
                 }
                 _response.ResponseMessage = result.Errors.FirstOrDefault().Description;
@@ -78,30 +82,34 @@ namespace Blog.Services
         {
             try
             {
+              
                 // Find user by Id
                 var user = await userManager.FindByIdAsync(request.Id);
-                // Validate the new password
-                var passwordValidator = new PasswordValidator<ApplicationUser>();
-                var passValidatorResult = await passwordValidator.ValidateAsync(userManager, user, request.NewPassword);
-                if (!passValidatorResult.Succeeded)
+                if (user == null)
                 {
-                    _response.ResponseMessage = passValidatorResult.Errors.FirstOrDefault().Description;
+                    _response.ResponseMessage = "User doesn't exist";
+                    return _response;
+                }
+                // Validate the new password
+                var isCurrentPasswordValid = await userManager.CheckPasswordAsync(user, request.CurrentPassword);
+                if (!isCurrentPasswordValid)
+                {
+                    _response.ResponseMessage = "Invalid password";
                     return  _response;
                 }
                 // Change user password
-                var newPassword = userManager.PasswordHasher.HashPassword(user, request.NewPassword);
-                user.PasswordHash = newPassword;
-                user.UpdatedDate = DateTime.Now;
-                // Update user
-                var result = await userManager.UpdateAsync(user);
-                if (result.Succeeded)
+                var changeResult = await userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+               
+               
+                if (changeResult.Succeeded)
                 {
+                    _response.ResponseMessage = "Password has been changed successfully";
                     _response.IsSuccess = true;
                     return _response;
                 }
                 else
                 {
-                    _response.ResponseMessage = result.Errors.FirstOrDefault().Description;
+                    _response.ResponseMessage = changeResult.Errors.FirstOrDefault().Description;
                     return _response;
                 }
             }
