@@ -20,7 +20,7 @@ namespace Blog.Domain.Models
         public DateTime? UpdatedDate { get; set; }
         public Guid? UpdatedBy { get; set; }
         public bool IsActive { get; set; }     
-        public Guid CreatedBy { get; set; }
+      
 
     
         public ICollection<ApplicationUserRole> UserRoles { get; set; }

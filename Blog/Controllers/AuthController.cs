@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Azure.Core;
 using Blog.Contracts.Auth.Request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Blog.Controllers
 {
@@ -18,7 +19,7 @@ namespace Blog.Controllers
         {
             this.authService = authService;
         }
-
+        [AllowAnonymous]
         [HttpPost(ApiRoute.Auth.Register)]
 
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDto request)
@@ -26,7 +27,7 @@ namespace Blog.Controllers
             var result = await authService.CreateUserAsync(request);
             return StatusCode(result.ResponseCode, result);
         }
-
+        [AllowAnonymous]
         [HttpPost(ApiRoute.Auth.Login)]
         public async Task<IActionResult> Login([FromBody] UserLoginRequestDto userCredentials)
         {

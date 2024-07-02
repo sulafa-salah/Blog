@@ -25,16 +25,24 @@ namespace Blog.Persistence
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
+        public DbSet<EmailLogger> EmailLoggers { get; set; }
+
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
         {
             var AddedEntities = ChangeTracker.Entries()
                 .Where(E => E.State == EntityState.Added)
                 .ToList();
-            var userId = _httpContextAccessor?.HttpContext.User.Claims.SingleOrDefault(s => s.Type == JwtRegisteredClaimNames.Jti)?.Value;
-
+            // Check if the entity has a property named "CreatedBy"
+          
             AddedEntities.ForEach(E =>
             {
-                E.Property("CreatedBy").CurrentValue =  new Guid(userId);
+                if (E.Properties.Any(p => p.Metadata.Name == "CreatedBy"))
+                {
+
+                    var userId = _httpContextAccessor?.HttpContext.User.Claims.SingleOrDefault(s => s.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+                    E.Property("CreatedBy").CurrentValue = new Guid(userId);
+                }
             });
 
 

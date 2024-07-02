@@ -20,7 +20,6 @@ namespace Blog.Test
             httpContext.Request.Headers["Accept-Language"] = "ar-SA";
             RequestDelegate next = (HttpContext httpContext) => Task.CompletedTask;
           
-
             var middleware = new LocalizationMiddleware();
 
             // Act

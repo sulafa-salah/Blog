@@ -26,6 +26,7 @@ namespace Blog.Installers
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenHandler, TokenHandler>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IEmailService, EmailService>();
             #endregion
         }
     }

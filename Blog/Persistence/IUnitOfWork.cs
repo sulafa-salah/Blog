@@ -7,6 +7,7 @@ namespace Blog.Persistence
         IPostRepository Post { get; }
         ICategoryRepository Category { get; }
         ICommentRepository Comment { get; }
+        IEmailLoggerRepository EmailLogger { get; }
         Task Commit();
 
     }

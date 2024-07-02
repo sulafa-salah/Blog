@@ -14,6 +14,19 @@ namespace Blog.Persistence
         private ICategoryRepository _Category;
         private IPostRepository _Post;
         private ICommentRepository _Comment;
+        private IEmailLoggerRepository _EmailLogger;
+        public IEmailLoggerRepository EmailLogger
+        {
+            get
+            {
+                if (_EmailLogger == null)
+                {
+                    _EmailLogger = new EmailLoggerRepository(_context);
+                }
+
+                return _EmailLogger;
+            }
+        }
         public IPostRepository Post
         {
             get
