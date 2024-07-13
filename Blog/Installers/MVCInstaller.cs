@@ -5,6 +5,7 @@ using Blog.Helper.Security.Tokens;
 using Blog.Options;
 using Blog.Services;
 using FluentValidation.AspNetCore;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
@@ -93,6 +94,7 @@ namespace Blog.Installers
                 };
             });
 
+
             #region Bearer swagger configuration.
             services.AddSwaggerGen(option =>
             {
@@ -129,7 +131,19 @@ namespace Blog.Installers
             });
 
             #endregion
-
+            #region cahing
+            services.AddResponseCaching();
+            services.AddHttpCacheHeaders((expirationModelOptions) => 
+            {
+                expirationModelOptions.MaxAge = 60;
+                expirationModelOptions.CacheLocation = Marvin.Cache.Headers.CacheLocation.Private;
+            },
+            (validationModelOptions) =>
+            {
+                validationModelOptions.MustRevalidate = true;
+            }
+            );
+            #endregion
         }
     }
 }

@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Blog.Contracts.Blog.Response;
+using Marvin.Cache.Headers;
 
 namespace Blog.Controllers
 {
     [Route("/api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CategoryController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
@@ -26,7 +27,9 @@ namespace Blog.Controllers
             this.mapper = mapper;
             _response = new ResponseDto();
         }
+       // [ResponseCache(Duration =120)]
         [HttpGet(ApiRoute.Category.GetAll)]
+     
         public async Task<IActionResult> GetAll()
         {
             try
@@ -43,7 +46,9 @@ namespace Blog.Controllers
             return Ok(_response);
         }
         [HttpGet(ApiRoute.Category.GetById + "/{id:int}")]
-       
+        // [ResponseCache(CacheProfileName = "30SecondsCashProfile")]
+        [HttpCacheExpiration(MaxAge =120,CacheLocation =CacheLocation.Public)]
+        [HttpCacheValidation(MustRevalidate = false)]
         public async Task<IActionResult> GetById(int id)
         {
             try

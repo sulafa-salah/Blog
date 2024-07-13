@@ -11,7 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.InstallServicesInAssembly(builder.Configuration, builder.Environment);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(configure =>
+    {
+        configure.CacheProfiles.Add("30SecondsCashProfile", new() { Duration = 30 });
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,6 +42,8 @@ var options = new RequestLocalizationOptions
 app.UseRequestLocalization(options);
 app.UseMiddleware<LocalizationMiddleware>();
 app.UseHttpsRedirection();
+app.UseResponseCaching();
+app.UseHttpCacheHeaders();
 app.UseAuthentication();
 app.UseAuthorization();
 
