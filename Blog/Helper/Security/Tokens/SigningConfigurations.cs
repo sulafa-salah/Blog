@@ -11,7 +11,7 @@ namespace Blog.Helper.Security.Tokens
         public SigningConfigurations()
         {
 
-            SecertKey = "TVv/2JGF9OV7ka16+fWsusfF/saic6MNCqT8oyaGUyc=";
+            SecertKey = "ttttttttttttka16+fWsusfF/saic6MNCqT8oyaGUyc=";
             Key = new SymmetricSecurityKey(Convert.FromBase64String(SecertKey));
             SigningCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
         }

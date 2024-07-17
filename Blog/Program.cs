@@ -1,6 +1,8 @@
+using Blog.Contracts.Identity.Request;
 using Blog.Helper.Middlewares;
 using Blog.Installers;
 using Blog.Persistence;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -14,7 +16,11 @@ builder.Services.InstallServicesInAssembly(builder.Configuration, builder.Enviro
 builder.Services.AddControllers(configure =>
     {
         configure.CacheProfiles.Add("30SecondsCashProfile", new() { Duration = 30 });
+    }).AddFluentValidation(fv => {
+    fv.RegisterValidatorsFromAssemblyContaining<UserRegistrationRequestDtoValidation>();
+    fv.ImplicitlyValidateChildProperties = true;
 });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -42,7 +48,7 @@ var options = new RequestLocalizationOptions
 app.UseRequestLocalization(options);
 app.UseMiddleware<LocalizationMiddleware>();
 app.UseHttpsRedirection();
-app.UseResponseCaching();
+//app.UseResponseCaching();
 app.UseHttpCacheHeaders();
 app.UseAuthentication();
 app.UseAuthorization();

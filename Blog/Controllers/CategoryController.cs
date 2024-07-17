@@ -9,12 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Blog.Contracts.Blog.Response;
 using Marvin.Cache.Headers;
+using Blog.Domain.Enums;
+using Blog.Helper.Extensions;
 
 namespace Blog.Controllers
 {
+   
     [Route("/api/v{version:apiVersion}/[controller]")]
     [ApiController]
-   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   //  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CategoryController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
@@ -27,9 +30,8 @@ namespace Blog.Controllers
             this.mapper = mapper;
             _response = new ResponseDto();
         }
-       // [ResponseCache(Duration =120)]
-        [HttpGet(ApiRoute.Category.GetAll)]
-     
+        // [ResponseCache(Duration =120)]
+           [HttpGet(ApiRoute.Category.GetAll)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -71,7 +73,7 @@ namespace Blog.Controllers
             return Ok(_response);
         }
         [HttpPost(ApiRoute.Category.Create)]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = nameof(ApplicationRoleEnums.Administrator))]
         public async Task<IActionResult> Create(CategoryResponseDto request)
         {
             try
@@ -97,7 +99,7 @@ namespace Blog.Controllers
         }
 
         [HttpPut(ApiRoute.Category.Update)]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = nameof(ApplicationRoleEnums.Administrator))]
         public async Task<IActionResult> Update(CategoryResponseDto request)
         {
             try

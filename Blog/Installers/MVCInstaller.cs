@@ -1,10 +1,11 @@
 ﻿using Asp.Versioning;
+using Blog.Contracts.Identity.Request;
 using Blog.Globalizations;
 using Blog.Helper.Middlewares;
 using Blog.Helper.Security.Tokens;
 using Blog.Options;
 using Blog.Services;
-using FluentValidation.AspNetCore;
+using FluentValidation;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
@@ -46,15 +47,18 @@ namespace Blog.Installers
 
             // Add AutoMapper
             services.AddAutoMapper(typeof(Program));
-
+            
+  
             // version
             services.AddApiVersioning(setupAction =>
             {
                 setupAction.ReportApiVersions = true;
                 setupAction.AssumeDefaultVersionWhenUnspecified = true;
                 setupAction.DefaultApiVersion = new ApiVersion(1, 0);
-            }).AddMvc() ;
+                setupAction.ApiVersionReader = new UrlSegmentApiVersionReader();
+            }).AddMvc();
 
+            services.AddValidatorsFromAssemblyContaining<UserRegistrationRequestDtoValidation>();
             // Add globalization
             services.AddLocalization();
            

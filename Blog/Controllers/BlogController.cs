@@ -69,7 +69,7 @@ namespace Blog.Controllers
             return Ok(_response);
         }
         [HttpPost(ApiRoute.Blog.Create)]
-
+        [Authorize(Roles = nameof(ApplicationRoleEnums.Administrator))]
         public async Task<IActionResult> Create(PostRequestDto request )
         {
             try
@@ -115,7 +115,8 @@ namespace Blog.Controllers
         }
 
         [HttpPut(ApiRoute.Blog.Update)]
-        
+        [Authorize(Roles = nameof(ApplicationRoleEnums.Administrator))]
+
         public async Task<IActionResult> Update(PostRequestDto request)
         {
             try
@@ -161,7 +162,7 @@ namespace Blog.Controllers
         }
         [HttpDelete(ApiRoute.Blog.Delete)]
        
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = nameof(ApplicationRoleEnums.Administrator))]
         public async Task<IActionResult> Delete([FromBody] Guid id)
         {
             try

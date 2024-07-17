@@ -20,19 +20,14 @@
             Data=data;
 
         }
-        //public BaseResponse(bool success, int statusCode, string responseMessage, List<ValidationError> validationErrors = null)
-        //{
-        //    IsSuccess = success;
-        //    ResponseCode = statusCode;
-        //    ResponseMessage = responseMessage;
-        //    ValidationErrors = validationErrors;
-        //}
+      
 
     }
-    //public class ValidationError
-    //{
-    //    public string Name { get; set; }
-    //    public string Description { get; set; }
-    //}
+    public record ErrorDetail
+    {
+        public string FieldName { get; init; }  
+        public string Message { get; init; }    // Using init-only property
+    }
+
 }
 

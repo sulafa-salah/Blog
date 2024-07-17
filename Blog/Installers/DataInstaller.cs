@@ -1,7 +1,9 @@
-﻿using Blog.Domain.Models;
+﻿using Blog.Contracts.Identity.Request;
+using Blog.Domain.Models;
 using Blog.Helper.Security.Tokens;
 using Blog.Persistence;
 using Blog.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,6 +29,7 @@ namespace Blog.Installers
             services.AddScoped<ITokenHandler, TokenHandler>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IEmailService, EmailService>();
+           // services.AddScoped<IValidator<UserRegistrationRequestDto>, UserRegistrationRequestDtoValidation>();
             #endregion
         }
     }
